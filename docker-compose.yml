@@ -4,6 +4,9 @@ services:
         build:
             dockerfile: Dockerfile
             context: .
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
         depends_on: 
             - redis
         ports:

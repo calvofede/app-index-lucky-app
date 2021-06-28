@@ -16,16 +16,12 @@ Project is created with:
 * Bcrypt
 
 ## Setup
-To run this project, install it locally using npm:
+To run this project, clone it first and install it locally using docker:
 
 ```
 $ cd ../app-index-lucky-app
-$ npm install
-$ npm run db:setup
-$ npm run start
+$ docker-compose up
 ```
 
 ### Important
-npm run db:setup must be done prior npm run start because is to drop tables, create tables and seed City and Country tables with random fake data using faker library.
-
 Login endpoint automatically set access_token(JWT token) variable in localhost environment, present in postman folder, that needs to be imported too.
