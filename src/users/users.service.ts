@@ -6,6 +6,7 @@ import {
 import knex from 'src/database/knex';
 import { User } from '../database/models/user.model';
 import { RegisterDto } from './register.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -16,14 +17,17 @@ export class UsersService {
   async createUser(body: RegisterDto): Promise<User | any> {
     const user = await this.findOne(body.username);
 
+    //Already been done at DTO level with @UserNotExists custom validator decorator
     if (user.length > 0)
       throw new BadRequestException('Error! Username already exists');
+
+    const hashedPassword = await bcrypt.hash(body.password, 10);
 
     try {
       await knex.transaction(async (trx) => {
         const userInsertedId = await knex('user')
           .returning('id')
-          .insert({ username: body.username, password: body.password })
+          .insert({ username: body.username, password: hashedPassword })
           .transacting(trx);
         const addressInsertedId = await knex('address')
           .returning('id')

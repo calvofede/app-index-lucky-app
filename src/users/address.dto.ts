@@ -1,8 +1,8 @@
 import { IsPositive } from 'class-validator';
-import { NotEmptyAndMaxLength } from 'src/validators/not-empty-max-length.decorator';
+import { LengthBetween } from 'src/validators/length-between.decorator';
 
 export class AddressDto {
-  @NotEmptyAndMaxLength(255)
+  @LengthBetween(1, 255)
   street: string;
   @IsPositive()
   cityId: string;

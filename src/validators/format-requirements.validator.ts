@@ -5,17 +5,17 @@ import {
   ValidationArguments,
 } from 'class-validator';
 
-@ValidatorConstraint({ name: 'NotEmptyAndMaxLength', async: true })
+@ValidatorConstraint({ name: 'FormatRequirements', async: true })
 @Injectable()
-export class NotEmptyAndMaxLengthValidator
+export class FormatRequirementsValidator
   implements ValidatorConstraintInterface
 {
   async validate(prop: string, args: ValidationArguments) {
-    const maxLength = args.constraints[0];
-    return prop && prop.length <= maxLength;
+    const formatRequired = args.constraints[0];
+    return formatRequired.test(prop);
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `Value ${args.value} in ${args.property} must not be empty or exceed max length of ${args.constraints[0]}`;
+    return `Value ${args.value} in ${args.property} cointains invalid format`;
   }
 }

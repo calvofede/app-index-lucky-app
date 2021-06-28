@@ -13,6 +13,7 @@ Project is created with:
 * NestJs
 * Objection ORM
 * SQLite3
+* Bcrypt
 
 ## Setup
 To run this project, install it locally using npm:
