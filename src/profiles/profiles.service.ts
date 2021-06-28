@@ -6,15 +6,8 @@ import { RedisCacheService } from 'src/redis-cache/redis-cache.service';
 export class ProfilesService {
   constructor(private cacheManager: RedisCacheService) {}
 
-  async setSomeValue(KEY, value) {
-    await this.cacheManager.set(KEY, value);
-  }
-  async getSomeValue(KEY): Promise<any> {
-    await this.cacheManager.get(KEY);
-  }
-
   async getProfile(userId: number) {
-    let profileResponse = await this.getSomeValue(`profile.userId${userId}`);
+    let profileResponse = await this.cacheManager.get(`userId${userId}`);
 
     if (!profileResponse) {
       profileResponse = await knex.raw(
@@ -27,7 +20,7 @@ export class ProfilesService {
         userId,
       );
 
-      this.setSomeValue(`profile.userId${userId}`, profileResponse);
+      await this.cacheManager.set(`userId${userId}`, profileResponse);
     }
 
     const profile = profileResponse[0];
