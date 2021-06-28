@@ -4,7 +4,7 @@
 * [Setup](#setup)
 
 ## General info
-Browser-based application using NestJS.
+Restful API using NestJS.
 This application allows register a user, login a user and retrieving user profile using JWT authentication.
 Postman collection can be found in postman folder, collection and environment both must be imported.
 	
