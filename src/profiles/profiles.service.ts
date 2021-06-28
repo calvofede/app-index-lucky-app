@@ -1,20 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import knex from 'src/database/knex';
+import { RedisCacheService } from 'src/redis-cache/redis-cache.service';
 
 @Injectable()
 export class ProfilesService {
-  async getProfile(userId: number) {
-    const queryResponse = await knex.raw(
-      'select profile.id as id, profile.name as name, address.street, ' +
-        'city.name as city, country.name as country from profile ' +
-        'inner join address on address.id = profile.address_id ' +
-        'inner join city on city.id = address.city_id ' +
-        'inner join country on country.id = city.country_id ' +
-        'where user_id = ?',
-      userId,
-    );
+  constructor(private cacheManager: RedisCacheService) {}
 
-    const profile = queryResponse[0];
+  async setSomeValue(KEY, value) {
+    await this.cacheManager.set(KEY, value);
+  }
+  async getSomeValue(KEY): Promise<any> {
+    await this.cacheManager.get(KEY);
+  }
+
+  async getProfile(userId: number) {
+    let profileResponse = await this.getSomeValue(`profile.userId${userId}`);
+
+    if (!profileResponse) {
+      profileResponse = await knex.raw(
+        'select profile.id as id, profile.name as name, address.street, ' +
+          'city.name as city, country.name as country from profile ' +
+          'inner join address on address.id = profile.address_id ' +
+          'inner join city on city.id = address.city_id ' +
+          'inner join country on country.id = city.country_id ' +
+          'where user_id = ?',
+        userId,
+      );
+
+      this.setSomeValue(`profile.userId${userId}`, profileResponse);
+    }
+
+    const profile = profileResponse[0];
 
     return {
       id: profile.id,
